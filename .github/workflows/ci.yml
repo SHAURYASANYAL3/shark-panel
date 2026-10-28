@@ -1,0 +1,29 @@
+name: Lint & Validate Skill
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify Core Files
+        run: |
+          test -f SKILL.md || exit 1
+          test -f README.md || exit 1
+          test -f LICENSE || exit 1
+          test -f commands/shark-panel.md || exit 1
+          test -f install.sh || exit 1
+          test -f install.ps1 || exit 1
+          echo "All required files are present!"
+
+      - name: Validate SKILL.md Frontmatter
+        run: |
+          head -n 10 SKILL.md | grep -E '^name: shark-panel' || exit 1
+          head -n 10 SKILL.md | grep -E '^description:' || exit 1
+          echo "SKILL.md frontmatter is valid!"
